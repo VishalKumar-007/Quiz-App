@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class StartScreen extends StatelessWidget {
-  const StartScreen({super.key});
+  final void Function() startQuiz;
+  // getting switchScreen function here to access
+  // so that on click of start quiz btn we'll change the screen
+  const StartScreen(this.startQuiz, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +30,10 @@ class StartScreen extends StatelessWidget {
           const SizedBox(height: 30),
           // start quiz button
           OutlinedButton.icon(
-            onPressed: () {},
+            // startQuiz function received from quiz.dart
+            // will execute switchScreen function present in quiz.dart
+            // and will change startScreen to questionScreen
+            onPressed: startQuiz,
             style: OutlinedButton.styleFrom(
               foregroundColor: Colors.white,
             ),
