@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:quiz_app/data/questions.dart';
 import 'package:quiz_app/question_screen.dart';
+import 'package:quiz_app/result_screen.dart';
 import 'package:quiz_app/start_screen.dart';
 
 class Quiz extends StatefulWidget {
@@ -10,12 +12,29 @@ class Quiz extends StatefulWidget {
 }
 
 class _QuizState extends State<Quiz> {
+  List<String> selectedAnswers = [];
   var activeScreen = 'start-screen';
 
   void switchScreen() {
     setState(() {
       activeScreen = 'question-screen';
     });
+  }
+
+  void choosenAnswers(String answer) {
+    // adds selected answer for specific question
+    // when passed through questionScreen to here
+    // which we'll use for resultScreen
+    selectedAnswers.add(answer);
+
+    if (selectedAnswers.length == questions.length) {
+      setState(() {
+        selectedAnswers = [];
+        // if all questions are answered
+        // activeScreen will be set to resultScreen
+        activeScreen = 'result-screen';
+      });
+    }
   }
 
   @override
@@ -38,7 +57,9 @@ class _QuizState extends State<Quiz> {
           // & not execute it when this line goes to StartScreen() class
           child: activeScreen == 'start-screen'
               ? StartScreen(switchScreen)
-              : const QuestionScreen(),
+              : activeScreen == 'question-screen'
+              ? QuestionScreen(onSelectAnswer: choosenAnswers)
+              : const ResultScreen(),
         ),
       ),
     );
