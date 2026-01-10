@@ -29,7 +29,6 @@ class _QuizState extends State<Quiz> {
 
     if (selectedAnswers.length == questions.length) {
       setState(() {
-        selectedAnswers = [];
         // if all questions are answered
         // activeScreen will be set to resultScreen
         activeScreen = 'result-screen';
@@ -37,8 +36,28 @@ class _QuizState extends State<Quiz> {
     }
   }
 
+  void restartQuiz() {
+    setState(() {
+      selectedAnswers = [];
+      activeScreen = 'question-screen';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    Widget screenWidget = StartScreen(switchScreen);
+
+    if (activeScreen == 'question-screen') {
+      screenWidget = QuestionScreen(onSelectAnswer: choosenAnswers);
+    }
+
+    if (activeScreen == 'result-screen') {
+      screenWidget = ResultScreen(
+        chosenAnswers: selectedAnswers,
+        onRestart: restartQuiz,
+      );
+    }
+
     return MaterialApp(
       home: Scaffold(
         body: Container(
@@ -55,11 +74,7 @@ class _QuizState extends State<Quiz> {
           // We're passing switchScreen function without parenthesis
           // bcz we just want to give pointer to that function
           // & not execute it when this line goes to StartScreen() class
-          child: activeScreen == 'start-screen'
-              ? StartScreen(switchScreen)
-              : activeScreen == 'question-screen'
-              ? QuestionScreen(onSelectAnswer: choosenAnswers)
-              : const ResultScreen(),
+          child: screenWidget,
         ),
       ),
     );
